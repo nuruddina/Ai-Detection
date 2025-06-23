@@ -10,7 +10,7 @@ st.subheader("Upload Image")
 st.write("upload an image")
 
 #----------------------------------------------------------------------------------------------
-model_path = "Kunming2003CNN.keras"  
+model_path = "/Kunming2003CNN.keras"  
 model = tf.keras.models.load_model(model_path, custom_objects={'mse': tf.keras.losses.MeanSquaredError()})
 
 def boxlocation(img_c, box_size):
