@@ -31,7 +31,7 @@ def drawbox(img, label, a, b, c, d, box_size):
 def objectdet(img):
     img = cv2.resize(img, (img.shape[1] // 1, img.shape[0] // 1), interpolation=cv2.INTER_AREA)
 
-    box_size_y, box_size_x = 370, 370
+    box_size_y, box_size_x = 200, 200
     step_size = 50
     img_output = np.array(img)
     img_cont = np.zeros((img_output.shape[0], img_output.shape[1]), dtype=np.uint8)
@@ -40,7 +40,7 @@ def objectdet(img):
     for i in range(0, img_output.shape[0] - box_size_y, step_size):
         for j in range(0, img_output.shape[1] - box_size_x, step_size):
             img_patch = img_output[i:i + box_size_y, j:j + box_size_x]
-            img_patch = cv2.resize(img_patch, (64, 64), interpolation=cv2.INTER_AREA)
+            img_patch = cv2.resize(img_patch, (128, 128), interpolation=cv2.INTER_AREA)
             img_patch = np.expand_dims(img_patch, axis=0)
 
             y_outp = model.predict(img_patch, verbose=0)
