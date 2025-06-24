@@ -6,8 +6,7 @@ from PIL import Image
 
 st.title("Parasite Egg Detector")
 
-st.subheader("Upload Image")
-st.write("upload an image")
+
 
 #----------------------------------------------------------------------------------------------
 model = tf.keras.models.load_model("sth_2025_tong_cnn.keras", custom_objects={'mse': tf.keras.losses.MeanSquaredError()})
