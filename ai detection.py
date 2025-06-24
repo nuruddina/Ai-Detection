@@ -4,13 +4,13 @@ import numpy as np
 import cv2
 from PIL import Image
 
-st.title("Parasit Egg Detector")
+st.title("Parasite Egg Detector")
 
 st.subheader("Upload Image")
 st.write("upload an image")
 
 #----------------------------------------------------------------------------------------------
-model = tf.keras.models.load_model("sth_2025_tong_cnn.keras", custom_objects={'mse': tf.keras.losses.MeanSquaredError()})
+model = tf.keras.models.load_model("/sth_2025_tong_cnn.keras", custom_objects={'mse': tf.keras.losses.MeanSquaredError()})
 
 def boxlocation(img_c, box_size):
     non_zero_points = np.argwhere(img_c > 0)
