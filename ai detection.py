@@ -52,7 +52,7 @@ def nms (detections, iou_threshold):
   return nms_dets
 
 def merge_connected_boxes_by_class (detections, merge_iou_threshold):
-  merged =［]
+  merged = []
   for class_idx in set([d[ 'class_id'] for d in detections]):
     class_dets - [d for d in detections if d[ 'class_idx'] == class_idx]
     used = set
