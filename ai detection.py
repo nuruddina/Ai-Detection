@@ -11,8 +11,8 @@ path = ""
 class_label = ["Artifact","As_fer","As_unfer","Hd","Hn","Hw","Mif","Ov","Tn","Tt"]
 
 class_config = {
-    1: (path + "sth_2025_tong_cnn.keras",(460,460)),
-    2: (path + "Kumming2003CNN.keras",(200,200)),
+  1: (path + "sth_2025_tong_cnn.keras",(460,460)),
+  2: (path + "Kumming2003CNN.keras",(200,200)),
 }
 
 def mse(y_true, y_pred):
