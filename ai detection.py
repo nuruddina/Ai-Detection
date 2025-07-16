@@ -3,7 +3,8 @@ import tensorflow as tf
 import cv2
 import numpy as np
 from keras.models import load_model
-from keras.loses import mean_squared_error
+from keras.losses import mean_squared_error
+
 
 path = ""
 class_label = ["Artifact","As_fer","As_unfer","Hd","Hn","Hw","Mif","Ov","Tn","Tt"]
