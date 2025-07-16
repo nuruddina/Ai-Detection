@@ -47,7 +47,7 @@ def nms (detections, iou_threshold):
       while class_dets:
         curr = class_dets.pop(0)
         keep. append (curr)
-        class _dets = [d for d in class _dets if compute_iou(curr[ 'bbox'], d['bbox']) < iou_threshold]
+        class_dets = [d for d in class _dets if compute_iou(curr[ 'bbox'], d['bbox']) < iou_threshold]
       nms_dets. extend (keep)
   return nms_dets
 
