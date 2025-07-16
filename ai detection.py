@@ -39,7 +39,7 @@ def compute_iou(box1, box2):
   return inter_area / union_area
 
 def nms (detections, iou_threshold):
-  nms_dets=［]
+  nms_dets =［]
   for class_idx in set([d['class_idx'] for d in detections]):
       class_dets = [d for d in detections if d['class_idx'] == class_idx]
       class_dets = sorted(class _dets, key=lambda x: x['score'], reverse=True)
