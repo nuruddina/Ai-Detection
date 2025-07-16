@@ -68,7 +68,7 @@ def merge_connected_boxes_by_class (detections, merge_iou_threshold):
         for j, other in enumerate(class_dets):
             if j in used: 
                 continue
-            if any (compute_iou(d[ 'bbox'], other[ 'bbox']) › merge_iou_threshold for d in group):
+            if any (compute_iou(d[ 'bbox'], other[ 'bbox']) > merge_iou_threshold for d in group):
               group.append (other)
               used .add(j)
               changed = True
