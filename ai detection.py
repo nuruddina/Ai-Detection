@@ -78,5 +78,6 @@ def ai_detector_page():
         except Exception as e:
             st.error(f"Error loading image: {e}")
 
-if __name__ == "__main__":
-    ai_detector_page()
+pages = {
+    "Ai Detector": ai_detector_page,
+    }
