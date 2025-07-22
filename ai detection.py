@@ -2,7 +2,7 @@ import streamlit as st
 import tensorflow as tf
 import cv2
 import numpy as np
-from keras.models import load_model
+from tensorflow.keras.models import load_model 
 from keras.losses import mean_squared_error
 
 
@@ -10,13 +10,13 @@ path = ""
 
 class_label = ["Artifact","As_fer","As_unfer","Hd","Hn","Hw","Mif","Ov","Tn","Tt"]
 
-class_config = {
-  1: (path + "sth_2025_tong_cnn.keras",(460,460)),
-  2: (path + "Kumming2003CNN.keras",(200,200)),
+class_configs = {
+  1: (path + "/Users/nuruddina/Desktop/mushroom/model/sth_2025_tong_cnn.kerass",(460,460)),
+  2: (path + "/Users/nuruddina/Desktop/mushroom/model/sth_2025_tong_cnn.keras",(200,200)),
 }
 
 def mse(y_true, y_pred):
-    return mean_squared_error(y_true, y_pred)
+  return mean_squared_error(y_true, y_pred)
     
 models = {idx: load_model(cfg[0], custom_objects={'mse' : mse}) for idx, cfg in class_configs.items()}
 
@@ -35,7 +35,7 @@ def compute_iou(box1, box2):
   inter_area = inter_w * inter_h
   box1_area = (box1[1] - box1[0]) * (box1[3] - box1[2])
   box2_area = (box2[1] - box2[0]) * (box2[3] - box2[2])
-  union_are = box1_area + box2_area - inter_area
+  union_area = box1_area + box2_area - inter_area
   if union_area == 0:
     return 0
   return inter_area / union_area
@@ -57,13 +57,13 @@ def merge_connected_boxes_by_class (detections, merge_iou_threshold):
   merged = []
   for class_idx in set([d[ 'class_id'] for d in detections]):
     class_dets - [d for d in detections if d[ 'class_idx'] == class_idx]
-    used = set
-    groups = [0]
+    used = set()
+    groups = []
     for i, det in enumerate(class_dets):
       if i in used: 
           continue
       group - [det] 
-      used. add (i)
+      used.add(i)
       changed = True
       while changed:
         changed = False
@@ -125,21 +125,3 @@ def objectDet(filepath, threshold, nms_threshold, merge_iou_threshold):
         color = colors[class_idx % len(colors)]
         img_output = drawbox(img_output, label, a, b, c, d, color)
     return img_output
-     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
