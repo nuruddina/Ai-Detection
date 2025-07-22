@@ -11,12 +11,10 @@ def ai_detector_page():
     st.write("Upload an image and view it below.")
 
     #----------------------------------------------------------------------------------------------
-    # กำหนด path ของ model โดยใช้ relative path จากตำแหน่ง script
     base_dir = os.path.dirname(os.path.abspath(__file__))
     model_path = os.path.join(base_dir, "sth_2025_tong_cnn.keras")
     #----------------------------------------------------------------------------------------------
 
-    # โหลดโมเดล
     model = tf.keras.models.load_model(
         model_path,
         custom_objects={'mse': tf.keras.losses.MeanSquaredError()}
@@ -78,6 +76,6 @@ def ai_detector_page():
         except Exception as e:
             st.error(f"Error loading image: {e}")
 
-pages = {
-    "Ai Detector": ai_detector_page,
-    }
+#================= เรียกใช้งานฟังก์ชัน ===================
+if __name__ == "__main__":
+    ai_detector_page()
