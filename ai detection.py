@@ -1,6 +1,9 @@
+import os
 import cv2
 import numpy as np
 import tensorflow as tf
+import streamlit as st
+from PIL import Image
 
 def ai_detector_page():
     st.title("AI Detector")
@@ -8,29 +11,31 @@ def ai_detector_page():
     st.write("Upload an image and view it below.")
 
     #----------------------------------------------------------------------------------------------
-    model_path = path + "sth_2025_tong_cnn.keras"
+    # กำหนด path ของ model โดยใช้ relative path จากตำแหน่ง script
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    model_path = os.path.join(base_dir, "sth_2025_tong_cnn.keras")
     #----------------------------------------------------------------------------------------------
 
-    model = tf.keras.models.load_model(model_path, custom_objects={'mse': tf.keras.losses.MeanSquaredError()})
+    # โหลดโมเดล
+    model = tf.keras.models.load_model(
+        model_path,
+        custom_objects={'mse': tf.keras.losses.MeanSquaredError()}
+    )
 
     def boxlocation(img_c, box_size):
         non_zero_points = np.argwhere(img_c > 0)
         if non_zero_points.size == 0:
             return None
-
         y_min, x_min = np.min(non_zero_points, axis=0)
         y_max, x_max = np.max(non_zero_points, axis=0)
-
         return [y_min - box_size, y_max + box_size, x_min - box_size, x_max + box_size]
 
     def drawbox(img, label, a, b, c, d, box_size):
-        image = cv2.rectangle(img, (c, a), (d, b), (0, 255, 0), 2)
-        image = cv2.putText(image, label, (c + box_size, a - 10), cv2.FONT_HERSHEY_TRIPLEX, 2, (255, 0, 255), 1)
+        image = cv2.rectangle(img.copy(), (c, a), (d, b), (0, 255, 0), 2)
+        image = cv2.putText(image, label, (c + box_size, a - 10), cv2.FONT_HERSHEY_TRIPLEX, 1, (255, 0, 255), 2)
         return image
 
     def objectdet(img):
-        img = cv2.resize(img, (img.shape[1] // 1, img.shape[0] // 1), interpolation=cv2.INTER_AREA)
-        
         box_size_y, box_size_x = 370, 370
         step_size = 50
         img_output = np.array(img)
@@ -60,14 +65,15 @@ def ai_detector_page():
     uploaded_file = st.file_uploader("Choose an image file", type=["png", "jpg", "jpeg", "tif"])
     if uploaded_file is not None:
         try:
-            image = np.array(Image.open(uploaded_file))
+            image = Image.open(uploaded_file)
+            image = np.array(image)
             if image.ndim == 2:
                 image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
 
-            st.image(image, caption="Uploaded Image")
+            st.image(image, caption="Uploaded Image", use_column_width=True)
 
             output_img = objectdet(image)
-            st.image(output_img, caption="Processed Image")
+            st.image(output_img, caption="Processed Image", use_column_width=True)
 
         except Exception as e:
             st.error(f"Error loading image: {e}")
