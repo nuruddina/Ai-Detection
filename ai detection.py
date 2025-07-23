@@ -35,7 +35,7 @@ def ai_detector_page():
 
     def objectdet(img):
         box_size_y, box_size_x = 200, 200
-        step_size = 50
+        step_size = 40
         img_output = np.array(img)
         img_cont = np.zeros((img_output.shape[0], img_output.shape[1]), dtype=np.uint8)
         result = 0
