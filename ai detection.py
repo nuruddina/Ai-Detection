@@ -12,7 +12,7 @@ def ai_detector_page():
 
     #----------------------------------------------------------------------------------------------
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    model_path = os.path.join(base_dir, "sth_2025_tong_cnn.keras")
+    model_path = os.path.join(base_dir, "Kunming2003CNN.keras")
     #----------------------------------------------------------------------------------------------
 
     model = tf.keras.models.load_model(
@@ -34,8 +34,8 @@ def ai_detector_page():
         return image
 
     def objectdet(img):
-        box_size_y, box_size_x = 460, 460
-        step_size = 150
+        box_size_y, box_size_x = 200, 200
+        step_size = 40
         img_output = np.array(img)
         img_cont = np.zeros((img_output.shape[0], img_output.shape[1]), dtype=np.uint8)
         result = 0
@@ -43,7 +43,7 @@ def ai_detector_page():
         for i in range(0, img_output.shape[0] - box_size_y, step_size):
             for j in range(0, img_output.shape[1] - box_size_x, step_size):
                 img_patch = img_output[i:i + box_size_y, j:j + box_size_x]
-                img_patch = cv2.resize(img_patch, (64, 64), interpolation=cv2.INTER_AREA)
+                img_patch = cv2.resize(img_patch, (128, 128), interpolation=cv2.INTER_AREA)
                 img_patch = np.expand_dims(img_patch, axis=0)
 
                 y_outp = model.predict(img_patch, verbose=0)
@@ -53,7 +53,7 @@ def ai_detector_page():
                     img_cont[i + (box_size_y // 2), j + (box_size_x // 2)] = int(y_outp[0][1] * 255)
 
         if result != 0:
-            label = f"Hw: {result:.2f}"
+            label = f"Ov: {result:.2f}"
             boxlocat = boxlocation(img_cont, box_size_x // 2)
             if boxlocat:
                 img_output = drawbox(img, label, *boxlocat, box_size_x // 2)
