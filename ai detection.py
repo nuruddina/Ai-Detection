@@ -68,10 +68,10 @@ def ai_detector_page():
             if image.ndim == 2:
                 image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
 
-            st.image(image, caption="Uploaded Image", use_column_width=True)
+            st.image(image, caption="Uploaded Image", use_container_width=True )
 
             output_img = objectdet(image)
-            st.image(output_img, caption="Processed Image", use_column_width=True)
+            st.image(output_img, caption="Processed Image", use_container_width=True )
 
         except Exception as e:
             st.error(f"Error loading image: {e}")
