@@ -12,7 +12,7 @@ def ai_detector_page():
 
     #----------------------------------------------------------------------------------------------
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    model_path = os.path.join(base_dir, "Donut_CNN.keras")
+    model_path = os.path.join(base_dir, "sth_2025_tong_cnn.keras")
     #----------------------------------------------------------------------------------------------
 
     model = tf.keras.models.load_model(
@@ -35,7 +35,7 @@ def ai_detector_page():
 
     def objectdet(img):
         box_size_y, box_size_x = 460, 460
-        step_size = 200
+        step_size = 150
         img_output = np.array(img)
         img_cont = np.zeros((img_output.shape[0], img_output.shape[1]), dtype=np.uint8)
         result = 0
