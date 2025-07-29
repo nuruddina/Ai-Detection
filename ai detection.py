@@ -53,7 +53,7 @@ def ai_detector_page():
                     img_cont[i + (box_size_y // 2), j + (box_size_x // 2)] = int(y_outp[0][1] * 255)
 
         if result != 0:
-            label = f"TT: {result:.2f}"
+            label = f"Hw: {result:.2f}"
             boxlocat = boxlocation(img_cont, box_size_x // 2)
             if boxlocat:
                 img_output = drawbox(img, label, *boxlocat, box_size_x // 2)
