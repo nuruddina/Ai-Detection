@@ -6,7 +6,7 @@ from PIL import Image
 import tempfile
 import os
 
-MODEL_PATH = "best.pt"
+MODEL_PATH = "/best.pt"
 model = YOLO(MODEL_PATH)
 
 st.set_page_config(page_title="YOLO Object Detection", layout="wide")
