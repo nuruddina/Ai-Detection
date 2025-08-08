@@ -3,5 +3,6 @@ pandas
 matplotlib
 pillow
 numpy
-opencv-python-headless
 ultralytics
+opencv-python-headless
+
