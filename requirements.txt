@@ -1,8 +1,10 @@
+streamlit
+ultralytics
+opencv-python-headless
+pillow
+numpy
 tensorflow
 pandas
 matplotlib
-pillow
-numpy
-ultralytics
-opencv-python-headless
+
 
