@@ -1,55 +1,81 @@
-import streamlit as st
-from ultralytics import YOLO
+import os
 import cv2
 import numpy as np
+import tensorflow as tf
+import streamlit as st
 from PIL import Image
-import tempfile
-import os
 
-MODEL_PATH = "best.pt"
-model = YOLO(MODEL_PATH)
+def ai_detector_page():
+    st.title("AI Detector")
+    st.subheader("Upload & View Image")
+    st.write("Upload an image and view it below.")
 
-st.set_page_config(page_title="YOLO Object Detection", layout="wide")
-st.title("🔍 YOLO Object Detection")
-st.markdown("Upload an image to run object detection using YOLO. Class 0 will be hidden.")
+    #----------------------------------------------------------------------------------------------
+    base_dir = os.path.dirname(os.path.abspath(_file_))
+    model_path = os.path.join(base_dir, "sth_2025_tong_cnn.keras")
+    #----------------------------------------------------------------------------------------------
 
-uploaded_file = st.file_uploader("Upload an Image", type=["jpg", "jpeg", "png", "tif", "tiff"])
+    model = tf.keras.models.load_model(
+        model_path,
+        custom_objects={'mse': tf.keras.losses.MeanSquaredError()}
+    )
 
-conf_threshold = st.slider("Confidence Threshold", 0.0, 1.0, 0.25, 0.01)
+    def boxlocation(img_c, box_size):
+        non_zero_points = np.argwhere(img_c > 0)
+        if non_zero_points.size == 0:
+            return None
+        y_min, x_min = np.min(non_zero_points, axis=0)
+        y_max, x_max = np.max(non_zero_points, axis=0)
+        return [y_min - box_size, y_max + box_size, x_min - box_size, x_max + box_size]
 
-if uploaded_file is not None:
-    file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
-    image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+    def drawbox(img, label, a, b, c, d, box_size):
+        image = cv2.rectangle(img.copy(), (c, a), (d, b), (0, 255, 0), 2)
+        image = cv2.putText(image, label, (c + box_size, a - 10), cv2.FONT_HERSHEY_TRIPLEX, 1, (255, 0, 255), 2)
+        return image
 
-    st.subheader("📷 Original Image")
-    st.image(cv2.cvtColor(image, cv2.COLOR_BGR2RGB), use_column_width=True)
+    def objectdet(img):
+        box_size_y, box_size_x = 460, 460
+        step_size = 150
+        img_output = np.array(img)
+        img_cont = np.zeros((img_output.shape[0], img_output.shape[1]), dtype=np.uint8)
+        result = 0
 
-    temp_dir = tempfile.mkdtemp()
-    temp_path = os.path.join(temp_dir, uploaded_file.name)
-    cv2.imwrite(temp_path, image)
+        for i in range(0, img_output.shape[0] - box_size_y, step_size):
+            for j in range(0, img_output.shape[1] - box_size_x, step_size):
+                img_patch = img_output[i:i + box_size_y, j:j + box_size_x]
+                img_patch = cv2.resize(img_patch, (64, 64), interpolation=cv2.INTER_AREA)
+                img_patch = np.expand_dims(img_patch, axis=0)
 
-    results = model(temp_path, conf=conf_threshold)
+                y_outp = model.predict(img_patch, verbose=0)
 
-    boxes = results[0].boxes.data.cpu().numpy()
-    filtered_boxes = []
-    for det in boxes:
-        x1, y1, x2, y2, conf, cls = det
-        if int(cls) != 0:
-            filtered_boxes.append(det)
+                if result < y_outp[0][1] and y_outp[0][1] > 0.95:
+                    result = y_outp[0][1]
+                    img_cont[i + (box_size_y // 2), j + (box_size_x // 2)] = int(y_outp[0][1] * 255)
 
-    annotated_img = image.copy()
-    for det in filtered_boxes:
-        x1, y1, x2, y2, conf, cls = det
-        label = f"{model.names[int(cls)]} {conf:.2f}"
-        color = (0, 255, 0)
-        cv2.rectangle(annotated_img, (int(x1), int(y1)), (int(x2), int(y2)), color, 2)
-        cv2.putText(annotated_img, label, (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
+        if result != 0:
+            label = f"Tt: {result:.2f}"
+            boxlocat = boxlocation(img_cont, box_size_x // 2)
+            if boxlocat:
+                img_output = drawbox(img, label, *boxlocat, box_size_x // 2)
 
-    st.subheader("✅ Detection Result (Class 0 Hidden)")
-    st.image(cv2.cvtColor(annotated_img, cv2.COLOR_BGR2RGB), use_column_width=True)
+        return img_output
 
-    st.subheader("📄 Detection Details")
-    for det in filtered_boxes:
-        x1, y1, x2, y2, conf, cls = det
-        st.write(f"Class: {model.names[int(cls)]}, Confidence: {conf:.2f}, "
-                 f"Box: [{int(x1)}, {int(y1)}, {int(x2)}, {int(y2)}]")
+    uploaded_file = st.file_uploader("Choose an image file", type=["png", "jpg", "jpeg", "tif"])
+    if uploaded_file is not None:
+        try:
+            image = Image.open(uploaded_file)
+            image = np.array(image)
+            if image.ndim == 2:
+                image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+
+            st.image(image, caption="Uploaded Image", use_container_width=True )
+
+            output_img = objectdet(image)
+            st.image(output_img, caption="Processed Image", use_container_width=True )
+
+        except Exception as e:
+            st.error(f"Error loading image: {e}")
+
+#================= เรียกใช้งานฟังก์ชัน ===================
+if _name_ == "_main_":
+    ai_detector_page()
