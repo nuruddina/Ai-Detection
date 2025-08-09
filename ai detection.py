@@ -77,5 +77,5 @@ def ai_detector_page():
             st.error(f"Error loading image: {e}")
 
 #================= เรียกใช้งานฟังก์ชัน ===================
-if _name_ == "_main_":
+if __name__ == "__main__":
     ai_detector_page()
