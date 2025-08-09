@@ -1,8 +1,8 @@
+matplotlib
+numpy
 opencv-python-headless
 pandas
-matplotlib
 pillow
-numpy
 tensorflow
 
 
